@@ -45,9 +45,39 @@ if __name__ == "__main__":
     for index, module in enumerate(modules):
         CARD_TAG = module.text
         module_abbreviation = module["href"].split("/")[-1]
-        module_xml = scraper.getXml(module_abbreviation)
+        module_xml = scraper.getXml(module_abbreviation).content
+        
+        soup = BeautifulSoup(module_xml,'lxml')
+        self_test_element = soup.find('title', string="Self-Test").parent
+        
+        questions = self_test_element.find_all("page")
+        
 
         
+        for page in questions:
+            PROMPT = page.find("p").getText()
+            
+            choices = page.findAll("choice")
+            if(len(choices)==0): break #Some modules have a residual question talking about textbook chapters
+            OPTIONS = list(map(lambda x: x.getText(), choices))
+
+            index_of_correct_choice = page.find("choices")["correctchoice"]
+            ANSWER = choices[int(index_of_correct_choice)-1].getText()
+            
+            #EXTRA = page.find('correctResponse').getText() # because I couldnt get this to work
+            EXTRA = page.find_all('p')[-2].getText() # enter super jank workaround
+            if(EXTRA==None):
+                EXTRA=""
+            elif(EXTRA.startswith("That's right,") or EXTRA.startswith("That's correct,")):
+                #good, we found it!
+                EXTRA = EXTRA.replace("That's right, ")
+                EXTRA = EXTRA.replace("That's correct, ")
+            else:
+                EXTRA = ""
+                
+            print((PROMPT,OPTIONS,ANSWER,EXTRA,CARD_TAG))
+
+       
         if index >=11 : break ## end of first "level"
     
     
