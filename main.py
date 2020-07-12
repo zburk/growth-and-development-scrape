@@ -55,6 +55,9 @@ if __name__ == "__main__":
     normal = "http://www.orthodonticinstruction.com/modules/view/1/studyphysgrowth/section/4/page/1"
 
     for index, module in enumerate(modules):
+        if index > 11 : break ## end of first "level"
+
+        print('Starting ' + module.text)
         CARD_TAG = 'DENT126::' + module.text.replace(' ', '-').lower()
         module_abbreviation = module["href"].split("/")[-1]
         module_xml = scraper.getXml(module_abbreviation).content
@@ -99,9 +102,6 @@ if __name__ == "__main__":
                 'Answer': ANSWER,
                 'Extra': EXTRA
             }, tags=[CARD_TAG])
-
-       
-        if index >=11 : break ## end of first "level"
     
     
 
