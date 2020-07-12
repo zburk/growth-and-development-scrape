@@ -19,6 +19,10 @@ class AnkiDeck:
     def __init__(self, title: str):
         self.title = title
 
+        # If deck doesn't exist, make it
+        if self.title not in ankiApi.invoke('deckNames'):
+            self.create()
+
     def create(self):
         ankiApi.invoke('createDeck', deck=self.title)
 
