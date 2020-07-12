@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 import ankiApi
 
 # DEMO
@@ -14,23 +14,9 @@ class AnkiDeck:
     def __init__(self, title: str):
         self.title = title
 
-        if 'Front Back Extra' not in ankiApi.invoke('modelNames'):
-            ankiApi.invoke('createModel',
-                modelName='Front Back Extra',
-                inOrderFields= ['Front', 'Back', 'Extra'],
-                css= ".card {\n font-family: arial;\n font-size: 20px;\n text-align: left;\n color: black;\n background-color: white;\n}\n",
-                cardTemplates= [
-                    {
-                        'Front': '{{Front}}',
-                        'Back': """{{ FrontSide }}<hr id=answer>{{ Back }}<hr id=answer>{{ Extra }}""",
-                    }
-                ]
-            )
-
-        
     def create(self):
         ankiApi.invoke('createDeck', deck=self.title)
-    
+
     def generateCardOutline(self, model: str, tags: List[str] = []):
         return {
             'deckName': self.title,
@@ -50,3 +36,8 @@ class AnkiDeck:
         }
 
         ankiApi.invoke('addNote', note=basicCard)
+    
+    def addCustomCard(self, model: str, fields: Dict[str, str], tags: List[str] = []):
+        customCard = self.generateCardOutline(model=model, tags=tags)
+        for fieldName, fieldContent in fields.items():
+            customCard[fieldName] = fieldContent
