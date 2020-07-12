@@ -9,6 +9,11 @@ import ankiApi
 # myDeck = AnkiDeck(deckName)
 # myDeck.create()
 # myDeck.addBasicCard(front='Red', back='Robin', tags=['bird', 'flying'])
+# myDeck.addCustomCard(model='Front Back Extra', fields={
+#     'Front': 'asdfsdfsd',
+#     'Back': '2342323k',
+#     'Extra': 'sdfkjs dlfks dflksdj fs',
+# }, tags=['bird'])
 
 class AnkiDeck:
     def __init__(self, title: str):
@@ -18,6 +23,9 @@ class AnkiDeck:
         ankiApi.invoke('createDeck', deck=self.title)
 
     def generateCardOutline(self, model: str, tags: List[str] = []):
+        if model not in ankiApi.invoke('modelNames'):
+            raise Exception('card type does not yet exist')
+
         return {
             'deckName': self.title,
             'modelName': model,
@@ -25,6 +33,7 @@ class AnkiDeck:
                 'allowDuplicate': False,
                 'duplicateScope': 'deck'
             },
+            'fields': {},
             'tags': tags,
         }
 
@@ -40,4 +49,6 @@ class AnkiDeck:
     def addCustomCard(self, model: str, fields: Dict[str, str], tags: List[str] = []):
         customCard = self.generateCardOutline(model=model, tags=tags)
         for fieldName, fieldContent in fields.items():
-            customCard[fieldName] = fieldContent
+            customCard['fields'][fieldName] = fieldContent
+        
+        ankiApi.invoke('addNote', note=customCard)

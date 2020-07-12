@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 
 import ankiApi
+from AnkiDeck import AnkiDeck
 
 ankiApi.addCustomCardType(title='Front Back Extra',
                           fields=['Front', 'Back', 'Extra'],
@@ -12,7 +13,6 @@ ankiApi.addCustomCardType(title='Front Back Extra',
                                     'Back': """{{ FrontSide }}<hr id=answer>{{ Back }}<hr id=answer>{{ Extra }}""",
                                 }
                             ])
-
 
 
 class Scraper:
