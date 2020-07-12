@@ -21,3 +21,14 @@ page = session.get(URL)
 soup = BeautifulSoup(page.text)
 
 print(soup)
+
+from AnkiDeck import AnkiDeck
+import ankiApi
+
+# Creates a new deck called 'Birds of a Feather Flock Together' and adds
+# a card with the front saying "Red" and the back saying "Robin" with the tags
+# "bird" and "flying"
+# deckName = 'Birds of a Feather Flock Together'
+# myDeck = AnkiDeck(deckName)
+# myDeck.create()
+# myDeck.addCard(front='Red', back='Robin', tags=['bird', 'flying'])
