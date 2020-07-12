@@ -86,13 +86,16 @@ if __name__ == "__main__":
                 EXTRA = ""
                 
             # Convert OPTIONS to something viewable on Anki
-            OPTIONS = '<br>'.join(OPTIONS)
+            letterOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+            assembledOptions = ''
 
+            for index, option in enumerate(OPTIONS):
+                assembledOptions = assembledOptions + letterOptions[index] + '. ' + option + '<br>'
 
             # print((PROMPT,OPTIONS,ANSWER,EXTRA,CARD_TAG))
             myDeck.addCustomCard(model='Prompt / Answer Choices / Answer / Extra', fields={
                 'Prompt': PROMPT,
-                'Answer Choices': OPTIONS,
+                'Answer Choices': assembledOptions,
                 'Answer': ANSWER,
                 'Extra': EXTRA
             }, tags=[CARD_TAG])
