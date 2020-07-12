@@ -52,7 +52,7 @@ if __name__ == "__main__":
     normal = "http://www.orthodonticinstruction.com/modules/view/1/studyphysgrowth/section/4/page/1"
 
     for index, module in enumerate(modules):
-        CARD_TAG = module.text
+        CARD_TAG = 'DENT 126 (Growth & Development)::' + module.text.replace(' ', '-').lower()
         module_abbreviation = module["href"].split("/")[-1]
         module_xml = scraper.getXml(module_abbreviation).content
         
