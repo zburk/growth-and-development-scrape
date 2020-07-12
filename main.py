@@ -5,17 +5,6 @@ import logincreds
 import ankiApi
 from AnkiDeck import AnkiDeck
 
-ankiApi.addCustomCardType(title='Prompt / Answer Choices / Answer / Extra',
-                          fields=['Prompt', 'Answer Choices', 'Answer', 'Extra'],
-                          css=".card {\n font-family: arial;\n font-size: 20px;\n text-align: left;\n color: black;\n background-color: white;\n}\n",
-                          cardTemplates=[
-                                {
-                                    'Front': '{{Prompt}}<br><br>{{ Answer Choices }}',
-                                    'Back': '{{ Prompt }}<hr id=answer>{{ Answer }}<hr id=answer>{{ Answer Choices }}<hr id=answer>{{ Extra }}',
-                                }
-                            ])
-
-
 class Scraper:
     
     session = requests.Session()
@@ -45,6 +34,19 @@ class Scraper:
         return self.session.get(f"http://www.orthodonticinstruction.com/modules/modulefiles/dswmedia/{module_abreviation}/data.xml")
 
 if __name__ == "__main__":
+    ankiApi.addCustomCardType(title='Prompt / Answer Choices / Answer / Extra',
+                          fields=['Prompt', 'Answer Choices', 'Answer', 'Extra'],
+                          css=".card {\n font-family: arial;\n font-size: 20px;\n text-align: left;\n color: black;\n background-color: white;\n}\n",
+                          cardTemplates=[
+                                {
+                                    'Front': '{{Prompt}}<br><br>{{ Answer Choices }}',
+                                    'Back': '{{ Prompt }}<hr id=answer>{{ Answer }}<hr id=answer>{{ Answer Choices }}<hr id=answer>{{ Extra }}',
+                                }
+                            ])
+    
+    myDeck = AnkiDeck('DENT 126 (Growth & Development)::Module Questions')
+    myDeck.create()
+
     scraper = Scraper()
     scraper.login()
     modules = scraper.getModules()
@@ -88,6 +90,12 @@ if __name__ == "__main__":
 
 
             # print((PROMPT,OPTIONS,ANSWER,EXTRA,CARD_TAG))
+            myDeck.addCustomCard(model='Prompt / Answer Choices / Answer / Extra', fields={
+                'Prompt': PROMPT,
+                'Answer Choices': OPTIONS,
+                'Answer': ANSWER,
+                'Extra': EXTRA
+            }, tags=[CARD_TAG])
 
        
         if index >=11 : break ## end of first "level"
