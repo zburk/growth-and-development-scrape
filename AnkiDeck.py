@@ -13,6 +13,20 @@ import ankiApi
 class AnkiDeck:
     def __init__(self, title: str):
         self.title = title
+
+        if 'Front Back Extra' not in ankiApi.invoke('modelNames'):
+            ankiApi.invoke('createModel',
+                modelName='Front Back Extra',
+                inOrderFields= ['Front', 'Back', 'Extra'],
+                css= ".card {\n font-family: arial;\n font-size: 20px;\n text-align: left;\n color: black;\n background-color: white;\n}\n",
+                cardTemplates= [
+                    {
+                        'Front': '{{Front}}',
+                        'Back': """{{ FrontSide }}<hr id=answer>{{ Back }}<hr id=answer>{{ Extra }}""",
+                    }
+                ]
+            )
+
         
     def create(self):
         ankiApi.invoke('createDeck', deck=self.title)
