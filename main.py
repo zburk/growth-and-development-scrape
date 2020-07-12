@@ -1,9 +1,11 @@
+# 3rd party modules
 from bs4 import BeautifulSoup
 import requests
-import logincreds
 
-import ankiApi
+# Custom build modules
 from AnkiDeck import AnkiDeck
+import logincreds
+import ankiApi
 
 class Scraper:
     
@@ -58,6 +60,7 @@ if __name__ == "__main__":
         if index > 11 : break ## end of first "level"
 
         print('Starting ' + module.text)
+
         CARD_TAG = 'DENT126::' + module.text.replace(' ', '-').lower()
         module_abbreviation = module["href"].split("/")[-1]
         module_xml = scraper.getXml(module_abbreviation).content
@@ -102,8 +105,5 @@ if __name__ == "__main__":
                 'Answer': ANSWER,
                 'Extra': EXTRA
             }, tags=[CARD_TAG])
-    
-    
-
 
 #the last module in level 1 is module #12
