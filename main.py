@@ -4,13 +4,13 @@ import requests
 import ankiApi
 from AnkiDeck import AnkiDeck
 
-ankiApi.addCustomCardType(title='Front Back Extra',
-                          fields=['Front', 'Back', 'Extra'],
+ankiApi.addCustomCardType(title='Prompt / Answer Choices / Answer / Extra',
+                          fields=['Prompt', 'Answer Choices', 'Answer', 'Extra'],
                           css=".card {\n font-family: arial;\n font-size: 20px;\n text-align: left;\n color: black;\n background-color: white;\n}\n",
                           cardTemplates=[
                                 {
-                                    'Front': '{{Front}}',
-                                    'Back': """{{ FrontSide }}<hr id=answer>{{ Back }}<hr id=answer>{{ Extra }}""",
+                                    'Front': '{{Prompt}}<br><br>{{ Answer Choices }}',
+                                    'Back': '{{ Prompt }}<hr id=answer>{{ Answer }}<hr id=answer>{{ Answer Choices }}<hr id=answer>{{ Extra }}',
                                 }
                             ])
 
