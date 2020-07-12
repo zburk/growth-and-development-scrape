@@ -31,4 +31,4 @@ import ankiApi
 # deckName = 'Birds of a Feather Flock Together'
 # myDeck = AnkiDeck(deckName)
 # myDeck.create()
-# myDeck.addCard(front='Red', back='Robin', tags=['bird', 'flying'])
+# myDeck.addBasicCard(front='Red', back='Robin', tags=['bird', 'flying'])

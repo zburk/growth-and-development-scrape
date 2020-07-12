@@ -8,17 +8,22 @@ class AnkiDeck:
     def create(self):
         ankiApi.invoke('createDeck', deck=self.title)
     
-    def addCard(self, front: str, back: str, tags: List[str] = []):
-        ankiApi.invoke('addNote', note={
+    def generateCardOutline(self, model: str, tags: List[str] = []):
+        return {
             'deckName': self.title,
-            'modelName': 'Basic',
-            'fields': {
-                'Front': front,
-                'Back': back
-            },
+            'modelName': model,
             'options': {
                 'allowDuplicate': False,
                 'duplicateScope': 'deck'
             },
             'tags': tags,
-        })
+        }
+
+    def addBasicCard(self, front: str, back: str, tags: List[str] = []):
+        basicCard = self.generateCardOutline(model='Basic', tags=tags)
+        basicCard['fields'] = {
+            'Front': front,
+            'Back': back
+        }
+
+        ankiApi.invoke('addNote', note=basicCard)
