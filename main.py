@@ -31,19 +31,7 @@ class Scraper:
 
         return modules
 
-    def findQuizSection(self, module, startingSectionIndex = 10):
-        """iterates downward until it finds the last section of a module"""
-
-        module_url = self.base_URL + module["href"]
-
-        good = self.session.get(f"{module_url}section/4/page/1").render()
-        bad = self.session.get(f"{module_url}section/10/page/1").render()
-        
-        print(good.text)
-        print()
-        print(bad.text)
-        #p = BeautifulSoup(r.text, "html.parser")
-        return
+    
        
 
     
@@ -57,8 +45,9 @@ if __name__ == "__main__":
     scraper.login()
     modules = scraper.getModules()
     for index, module in enumerate(modules):
-       scraper.findQuizSection(module)
-       break
+        CARD_TAG = module[index].text
+        
+        break
 
 
 #the last module in level 1 is module #12
