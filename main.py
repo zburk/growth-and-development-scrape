@@ -1,3 +1,5 @@
+from AnkiDeck import AnkiDeck
+import ankiApi
 from bs4 import BeautifulSoup
 import requests
 
