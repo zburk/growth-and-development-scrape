@@ -45,7 +45,7 @@ class Scraper:
 
 if __name__ == "__main__":
     scraper = Scraper()
-    scraper.login()
+    # scraper.login()
     modules = scraper.getModules()
 
     xml_url = "http://www.orthodonticinstruction.com/modules/modulefiles/dswmedia/studyphysgrowth/data.xml"
