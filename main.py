@@ -47,7 +47,6 @@ if __name__ == "__main__":
                             ])
     
     myDeck = AnkiDeck('DENT 126 (Growth & Development)::Module Questions')
-    myDeck.create()
 
     scraper = Scraper()
     scraper.login()
