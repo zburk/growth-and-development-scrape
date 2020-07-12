@@ -1,5 +1,3 @@
-from AnkiDeck import AnkiDeck
-import ankiApi
 from bs4 import BeautifulSoup
 import requests
 
@@ -33,23 +31,26 @@ class Scraper:
 
         return modules
 
-    
-       
-
-    
-    
-   
-
-
+    def getXml(self, module_abreviation):
+        return self.session.get(f"http://www.orthodonticinstruction.com/modules/modulefiles/dswmedia/{module_abreviation}/data.xml")
 
 if __name__ == "__main__":
     scraper = Scraper()
     scraper.login()
     modules = scraper.getModules()
+
+    xml_url = "http://www.orthodonticinstruction.com/modules/modulefiles/dswmedia/studyphysgrowth/data.xml"
+    normal = "http://www.orthodonticinstruction.com/modules/view/1/studyphysgrowth/section/4/page/1"
+
     for index, module in enumerate(modules):
-        CARD_TAG = module[index].text
+        CARD_TAG = module.text
+        module_abbreviation = module["href"].split("/")[-1]
+        module_xml = scraper.getXml(module_abbreviation)
+
         
-        break
+        if index >=11 : break ## end of first "level"
+    
+    
 
 
 #the last module in level 1 is module #12
