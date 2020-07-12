@@ -1,19 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
+import logincreds
 
 import ankiApi
 from AnkiDeck import AnkiDeck
-
-ankiApi.addCustomCardType(title='Front Back Extra',
-                          fields=['Front', 'Back', 'Extra'],
-                          css=".card {\n font-family: arial;\n font-size: 20px;\n text-align: left;\n color: black;\n background-color: white;\n}\n",
-                          cardTemplates=[
-                                {
-                                    'Front': '{{Front}}',
-                                    'Back': """{{ FrontSide }}<hr id=answer>{{ Back }}<hr id=answer>{{ Extra }}""",
-                                }
-                            ])
-
 
 class Scraper:
     
@@ -44,6 +34,19 @@ class Scraper:
         return self.session.get(f"http://www.orthodonticinstruction.com/modules/modulefiles/dswmedia/{module_abreviation}/data.xml")
 
 if __name__ == "__main__":
+    ankiApi.addCustomCardType(title='Prompt / Answer Choices / Answer / Extra',
+                          fields=['Prompt', 'Answer Choices', 'Answer', 'Extra'],
+                          css=".card {\n font-family: arial;\n font-size: 20px;\n text-align: left;\n color: black;\n background-color: white;\n}\n",
+                          cardTemplates=[
+                                {
+                                    'Front': '{{Prompt}}<br><br>{{ Answer Choices }}',
+                                    'Back': '{{ Prompt }}<hr id=answer>{{ Answer }}<hr id=answer>{{ Answer Choices }}<hr id=answer>{{ Extra }}',
+                                }
+                            ])
+    
+    myDeck = AnkiDeck('DENT 126 (Growth & Development)::Module Questions')
+    myDeck.create()
+
     scraper = Scraper()
     scraper.login()
     modules = scraper.getModules()
@@ -52,7 +55,10 @@ if __name__ == "__main__":
     normal = "http://www.orthodonticinstruction.com/modules/view/1/studyphysgrowth/section/4/page/1"
 
     for index, module in enumerate(modules):
-        CARD_TAG = module.text
+        if index > 11 : break ## end of first "level"
+
+        print('Starting ' + module.text)
+        CARD_TAG = 'DENT126::' + module.text.replace(' ', '-').lower()
         module_abbreviation = module["href"].split("/")[-1]
         module_xml = scraper.getXml(module_abbreviation).content
         
@@ -60,9 +66,7 @@ if __name__ == "__main__":
         self_test_element = soup.find('title', string="Self-Test").parent
         
         questions = self_test_element.find_all("page")
-        
 
-        
         for page in questions:
             PROMPT = page.find("p").getText()
             
@@ -79,15 +83,25 @@ if __name__ == "__main__":
                 EXTRA=""
             elif(EXTRA.startswith("That's right,") or EXTRA.startswith("That's correct,")):
                 #good, we found it!
-                EXTRA = EXTRA.replace("That's right, ")
-                EXTRA = EXTRA.replace("That's correct, ")
+                EXTRA = EXTRA.replace("That's right, ", "")
+                EXTRA = EXTRA.replace("That's correct, ", "")
             else:
                 EXTRA = ""
                 
-            print((PROMPT,OPTIONS,ANSWER,EXTRA,CARD_TAG))
+            # Convert OPTIONS to something viewable on Anki
+            letterOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+            assembledOptions = ''
 
-       
-        if index >=11 : break ## end of first "level"
+            for index, option in enumerate(OPTIONS):
+                assembledOptions = assembledOptions + letterOptions[index] + '. ' + option + '<br>'
+
+            # print((PROMPT,OPTIONS,ANSWER,EXTRA,CARD_TAG))
+            myDeck.addCustomCard(model='Prompt / Answer Choices / Answer / Extra', fields={
+                'Prompt': PROMPT,
+                'Answer Choices': assembledOptions,
+                'Answer': ANSWER,
+                'Extra': EXTRA
+            }, tags=[CARD_TAG])
     
     
 
