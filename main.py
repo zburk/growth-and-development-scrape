@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+import logincreds
 
 import ankiApi
 from AnkiDeck import AnkiDeck
@@ -45,14 +46,14 @@ class Scraper:
 
 if __name__ == "__main__":
     scraper = Scraper()
-    # scraper.login()
+    scraper.login()
     modules = scraper.getModules()
 
     xml_url = "http://www.orthodonticinstruction.com/modules/modulefiles/dswmedia/studyphysgrowth/data.xml"
     normal = "http://www.orthodonticinstruction.com/modules/view/1/studyphysgrowth/section/4/page/1"
 
     for index, module in enumerate(modules):
-        CARD_TAG = 'DENT 126 (Growth & Development)::' + module.text.replace(' ', '-').lower()
+        CARD_TAG = 'DENT126::' + module.text.replace(' ', '-').lower()
         module_abbreviation = module["href"].split("/")[-1]
         module_xml = scraper.getXml(module_abbreviation).content
         
@@ -60,9 +61,7 @@ if __name__ == "__main__":
         self_test_element = soup.find('title', string="Self-Test").parent
         
         questions = self_test_element.find_all("page")
-        
 
-        
         for page in questions:
             PROMPT = page.find("p").getText()
             
@@ -79,12 +78,16 @@ if __name__ == "__main__":
                 EXTRA=""
             elif(EXTRA.startswith("That's right,") or EXTRA.startswith("That's correct,")):
                 #good, we found it!
-                EXTRA = EXTRA.replace("That's right, ")
-                EXTRA = EXTRA.replace("That's correct, ")
+                EXTRA = EXTRA.replace("That's right, ", "")
+                EXTRA = EXTRA.replace("That's correct, ", "")
             else:
                 EXTRA = ""
                 
-            print((PROMPT,OPTIONS,ANSWER,EXTRA,CARD_TAG))
+            # Convert OPTIONS to something viewable on Anki
+            OPTIONS = '<br>'.join(OPTIONS)
+
+
+            # print((PROMPT,OPTIONS,ANSWER,EXTRA,CARD_TAG))
 
        
         if index >=11 : break ## end of first "level"
