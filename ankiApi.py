@@ -1,5 +1,6 @@
 import json
 import urllib.request
+from typing import List, Dict
 
 def request(action, **params):
     return {'action': action, 'params': params, 'version': 6}
@@ -17,3 +18,18 @@ def invoke(action, **params):
     if response['error'] is not None:
         raise Exception(response['error'])
     return response['result']
+
+def addCustomCardType(title: str, fields: List[str], css: str = '', cardTemplates: List[Dict[str, str]] = []):
+    if title not in invoke('modelNames'):
+        if (len(cardTemplates) == 0):
+            generateTemplateDict = {}
+            for field in fields:
+                generateTemplateDict[field] = '{{' + field + '}}'
+            cardTemplates = [ generateTemplateDict ]
+
+        invoke('createModel',
+            modelName=title,
+            inOrderFields=fields,
+            css=css,
+            cardTemplates=cardTemplates
+        )

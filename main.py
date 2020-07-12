@@ -1,9 +1,18 @@
 from bs4 import BeautifulSoup
 import requests
 
-import logincreds
+import ankiApi
+from AnkiDeck import AnkiDeck
 
-
+ankiApi.addCustomCardType(title='Front Back Extra',
+                          fields=['Front', 'Back', 'Extra'],
+                          css=".card {\n font-family: arial;\n font-size: 20px;\n text-align: left;\n color: black;\n background-color: white;\n}\n",
+                          cardTemplates=[
+                                {
+                                    'Front': '{{Front}}',
+                                    'Back': """{{ FrontSide }}<hr id=answer>{{ Back }}<hr id=answer>{{ Extra }}""",
+                                }
+                            ])
 
 
 class Scraper:
